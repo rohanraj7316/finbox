@@ -173,33 +173,32 @@ func TestInsertAdjustedTicker(t *testing.T) {
 		t.Errorf("failed to init db: %s", err)
 	}
 
-	// now := time.Now()
+	now := time.Now()
 
-	// currentYear, currentMonth, _ := now.Date()
+	currentYear, currentMonth, _ := now.Date()
 
-	// currentLocation := now.Location()
+	currentLocation := now.Location()
 
-	// // Get the first day of the current month
-	// firstOfMonth := time.Date(currentYear, currentMonth, 1, 0, 0, 0, 0, currentLocation)
+	// Get the first day of the current month
+	firstOfMonth := time.Date(currentYear, currentMonth, 1, 0, 0, 0, 0, currentLocation)
 
-	// // Get the last day of the previous month
-	// lastOfMonth := firstOfMonth.AddDate(0, 0, -1)
+	// Get the last day of the previous month
+	lastOfMonth := firstOfMonth.AddDate(0, 0, -1)
 
-	// // Get the first day of the previous month
-	// firstOfLastMonth := lastOfMonth.AddDate(0, -1, 1)
+	// Get the first day of the previous month
+	firstOfLastMonth := lastOfMonth.AddDate(0, -1, 1)
 
-	// start := firstOfLastMonth
-	// for start.Before(lastOfMonth) {
-	// 	start = start.AddDate(0, 0, 1)
+	start := firstOfLastMonth
+	for start.Before(lastOfMonth) {
+		start = start.AddDate(0, 0, 1)
 
-	// 	from := start.Format(CONST_NEWS_SENTIMENTAL_DATE_FORMAT)
-	// 	to := start.AddDate(0, 0, 1).Format(CONST_NEWS_SENTIMENTAL_DATE_FORMAT)
+		from := start.Format(CONST_NEWS_SENTIMENTAL_DATE_FORMAT)
+		to := start.AddDate(0, 0, 1).Format(CONST_NEWS_SENTIMENTAL_DATE_FORMAT)
 
-	err = ProcessDayNews(context.Background(), st, ps, "AAPL", "20231003T000000", "20231004T000000")
-	if err != nil {
-		t.Errorf("failed to update news data: %s", err)
+		err = ProcessDayNews(context.Background(), st, ps, "AAPL", from, to)
+		if err != nil {
+			t.Errorf("failed to update news data: %s", err)
+		}
+
 	}
-
-	t.Error()
-	// }
 }
