@@ -3,12 +3,14 @@ package client
 import (
 	"context"
 	"fmt"
+	"log"
 	"strconv"
 	"testing"
 	"time"
 
 	env "github.com/joho/godotenv"
 	"github.com/pkg/errors"
+	"github.com/rohanraj7316/ds/migrations"
 	"github.com/rohanraj7316/ds/storage"
 	"github.com/rohanraj7316/ds/utils/postgres"
 )
@@ -19,6 +21,13 @@ const (
 
 var loadEnv = env.Load
 
+func migration(ps *postgres.Storage) {
+	err := migrations.Migration(context.Background(), ps)
+	if err != nil {
+		log.Fatalf("failed to initialize postgres: %s", err)
+	}
+}
+
 func TestInsertTicker(t *testing.T) {
 
 	// load env config
@@ -26,6 +35,13 @@ func TestInsertTicker(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+
+	ps, err := postgres.New()
+	if err != nil {
+		t.Errorf("failed to init db: %s", err)
+	}
+
+	migration(ps)
 
 	st, err := NewStock()
 	if err != nil {
@@ -35,11 +51,6 @@ func TestInsertTicker(t *testing.T) {
 	res, err := st.IntraDay(context.Background(), "AAPL", "2023-10")
 	if err != nil {
 		t.Errorf("failed to get response from stock api: %s", err)
-	}
-
-	ps, err := postgres.New()
-	if err != nil {
-		t.Errorf("failed to init db: %s", err)
 	}
 
 	errs := []error{}
@@ -163,14 +174,16 @@ func TestInsertAdjustedTicker(t *testing.T) {
 		t.Error(err)
 	}
 
-	st, err := NewIntelligence()
-	if err != nil {
-		t.Errorf("failed to init stock api: %s", err)
-	}
-
 	ps, err := postgres.New()
 	if err != nil {
 		t.Errorf("failed to init db: %s", err)
+	}
+
+	migration(ps)
+
+	st, err := NewIntelligence()
+	if err != nil {
+		t.Errorf("failed to init stock api: %s", err)
 	}
 
 	now := time.Now()
