@@ -1,0 +1,26 @@
+version: v1
+plugins:
+  - plugin: go
+    out: pkg
+    opt:
+      - paths=source_relative
+  - plugin: go-grpc
+    out: pkg
+    opt:
+      - paths=source_relative
+  - plugin: grpc-gateway
+    out: pkg
+    opt:
+      - paths=source_relative
+  - plugin: openapiv2
+    out: docs
+    strategy: all
+    opt:
+      - allow_merge=true
+      - merge_file_name=trading
+      - use_go_templates=true
+      - visibility_restriction_selectors=BETA
+  - plugin: buf.build/bufbuild/validate-go
+    out: pkg
+    opt:
+      - paths=source_relative

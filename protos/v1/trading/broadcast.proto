@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package protos.v1;
+
+import "google/api/annotations.proto";
+import "google/api/visibility.proto";
+import "validate/validate.proto";
+
+option go_package = "./broadcast";
+
+message BroadcastServiceReadRequest {
+  // brodcast's symbol
+  string symbol = 1 [(validate.rules).string = {min_len: 4}];
+}
+
+message Ticker {
+  string symbol = 1;
+  string close_price = 2;
+  string timestamp = 3;
+}
+
+message BroadcastServiceReadResponse {
+  // blog's unique uuid. which gonna be used across all other systems
+  repeated Ticker tickers = 1;
+}
+
+service BroadcastService {
+  // Read
+  //
+  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+  //
+  // ## {{.RequestType.Name}}
+  // | Field ID    | Name      | Type                                                       | Description                  |
+  // | ----------- | --------- | ---------------------------------------------------------  | ---------------------------- | {{range .RequestType.Fields}}
+  // | {{.Number}} | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+  //
+  // ## {{.ResponseType.Name}}
+  // | Field ID    | Name      | Type                                                       | Description                  |
+  // | ----------- | --------- | ---------------------------------------------------------- | ---------------------------- | {{range .ResponseType.Fields}}
+  // | {{.Number}} | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+  rpc Read(BroadcastServiceReadRequest) returns (BroadcastServiceReadResponse) {
+    option (google.api.method_visibility).restriction = "BETA";
+    option (google.api.http) = {
+      post: "/v1/brodcast/read"
+      body: "*"
+    };
+  }
+}

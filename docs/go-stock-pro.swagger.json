@@ -1,0 +1,120 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "protos/v1/trading/broadcast.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "BroadcastService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/brodcast/read": {
+      "post": {
+        "summary": "Read",
+        "description": "Read is a call with the method(s) POST within the \"BroadcastService\" service.\nIt takes in \"BroadcastServiceReadRequest\" and returns a \"BroadcastServiceReadResponse\".\n\n## BroadcastServiceReadRequest\n| Field ID    | Name      | Type                                                       | Description                  |\n| ----------- | --------- | ---------------------------------------------------------  | ---------------------------- | \n| 1 | symbol | TYPE_STRING | brodcast's symbol | \n\n## BroadcastServiceReadResponse\n| Field ID    | Name      | Type                                                       | Description                  |\n| ----------- | --------- | ---------------------------------------------------------- | ---------------------------- | \n| 1 | tickers | []TYPE_MESSAGE | blog's unique uuid. which gonna be used across all other systems |",
+        "operationId": "BroadcastService_Read",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1BroadcastServiceReadResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1BroadcastServiceReadRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BroadcastService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1BroadcastServiceReadRequest": {
+      "type": "object",
+      "properties": {
+        "symbol": {
+          "type": "string",
+          "title": "brodcast's symbol"
+        }
+      }
+    },
+    "v1BroadcastServiceReadResponse": {
+      "type": "object",
+      "properties": {
+        "tickers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Ticker"
+          },
+          "title": "blog's unique uuid. which gonna be used across all other systems"
+        }
+      }
+    },
+    "v1Ticker": {
+      "type": "object",
+      "properties": {
+        "symbol": {
+          "type": "string"
+        },
+        "closePrice": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
